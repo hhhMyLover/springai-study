@@ -1,14 +1,13 @@
 package com.wzh.springai.service.impl;
 
 import com.wzh.springai.advisor.LoverAdvisor;
+import com.wzh.springai.chatmemory.FileBaseChatMemory;
 import com.wzh.springai.model.vo.LoverReportVO;
 import com.wzh.springai.service.LoverService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
-import org.springframework.ai.chat.memory.ChatMemory;
-import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.stereotype.Service;
@@ -29,10 +28,13 @@ public class LoverServiceImpl implements LoverService {
 //    }
 
     public LoverServiceImpl(ChatModel dashscopeChatModel) {
-        ChatMemory chatMemory = new InMemoryChatMemory();
+//        ChatMemory chatMemory = new InMemoryChatMemory();
+        String filePath = System.getProperty("user.dir") + "/tmp/chat-memory";
+        FileBaseChatMemory chatMemory = new FileBaseChatMemory(filePath);
         // 初始化带记忆功能的 ChatClient
         this.chatClientWithMemory = ChatClient.builder(dashscopeChatModel)
                 .defaultAdvisors(
+                        // 测试自定义记忆功能
                         new MessageChatMemoryAdvisor(chatMemory),
                         new LoverAdvisor()
 //                        new ReReadingAdvisor()
