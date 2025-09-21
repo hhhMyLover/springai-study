@@ -7,5 +7,7 @@ public interface LoverService {
 
     String loverChatMemory(String message, String chatId);
 
+    String chatLoverFormRAG(String message, String chatId);
+
     LoverReportVO chatLoverReport(String message, String chatId);
 }

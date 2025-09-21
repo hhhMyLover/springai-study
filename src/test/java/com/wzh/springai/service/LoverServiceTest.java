@@ -35,4 +35,9 @@ class LoverServiceTest {
     }
 
 
+    @Test
+    void chatLoverFormRAG() {
+        String uuid = UUID.randomUUID().toString();
+        loverService.chatLoverFormRAG("我是一个单身人士，最近我想要谈恋爱，但是不知道从何提升个人魅力，请你给我一点建议。",uuid);
+    }
 }
