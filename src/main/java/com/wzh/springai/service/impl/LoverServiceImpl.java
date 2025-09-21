@@ -1,6 +1,7 @@
 package com.wzh.springai.service.impl;
 
 import com.wzh.springai.advisor.LoverAdvisor;
+import com.wzh.springai.advisor.ProhibitedWordsAdvisor;
 import com.wzh.springai.chatmemory.FileBaseChatMemory;
 import com.wzh.springai.model.vo.LoverReportVO;
 import com.wzh.springai.service.LoverService;
@@ -10,7 +11,14 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.chat.prompt.SystemPromptTemplate;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY;
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_RETRIEVE_SIZE_KEY;
@@ -27,24 +35,35 @@ public class LoverServiceImpl implements LoverService {
 //    record LoverReport(String title, List<String> suggestions) {
 //    }
 
-    public LoverServiceImpl(ChatModel dashscopeChatModel) {
+    public LoverServiceImpl(ChatModel dashscopeChatModel,
+                            RedisTemplate<String ,Object> redisTemplate,
+                            @Value("classpath:/prompts/system-message.st") Resource systemResource) {
 //        ChatMemory chatMemory = new InMemoryChatMemory();
         String filePath = System.getProperty("user.dir") + "/tmp/chat-memory";
         FileBaseChatMemory chatMemory = new FileBaseChatMemory(filePath);
+
+//        RedisBaseChatMemory redisBaseChatMemory = new RedisBaseChatMemory(redisTemplate);
+        SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(systemResource);
+        Map<String, Object> templateParams = new HashMap<>();
+        templateParams.put("type", "温柔");
+        templateParams.put("language", "English");
+        String render = systemPromptTemplate.render(templateParams);
+
         // 初始化带记忆功能的 ChatClient
-        this.chatClientWithMemory = ChatClient.builder(dashscopeChatModel)
+            this.chatClientWithMemory = ChatClient.builder(dashscopeChatModel)
                 .defaultAdvisors(
                         // 测试自定义记忆功能
                         new MessageChatMemoryAdvisor(chatMemory),
-                        new LoverAdvisor()
+                        new LoverAdvisor(),
+                        new ProhibitedWordsAdvisor()
 //                        new ReReadingAdvisor()
                 )
-                .defaultSystem("你是一个恋爱助手，帮我解决我的恋爱问题并且进行情感疏导")
+                .defaultSystem(render)
                 .build();
 
         // 初始化普通 ChatClient
         this.chatClient = ChatClient.builder(dashscopeChatModel)
-                .defaultSystem("你是一个恋爱助手，帮我解决我的恋爱问题并且进行情感疏导")
+                .defaultSystem(render)
                 .defaultAdvisors(
                         new LoverAdvisor()
                 )
