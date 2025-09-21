@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
-import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
+import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
@@ -36,6 +36,9 @@ public class LoverServiceImpl implements LoverService {
 
     @Autowired
     private VectorStore loverVectorStore;
+
+    @Autowired
+    private Advisor loverCloudStoreAdvisor;
 
     // 新特性，快速定义类
 //    record LoverReport(String title, List<String> suggestions) {
@@ -112,8 +115,9 @@ public class LoverServiceImpl implements LoverService {
                 .advisors(spec -> spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
                         .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10))
                 .advisors(
-                        new LoverAdvisor(),
-                        new QuestionAnswerAdvisor(loverVectorStore)
+//                        new QuestionAnswerAdvisor(loverVectorStore)
+                        // 增强顾问
+                        loverCloudStoreAdvisor
                 )
                 .call()
                 .chatResponse();
