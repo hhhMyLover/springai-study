@@ -9,12 +9,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.ai.vectorstore.VectorStore;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -34,10 +34,13 @@ public class LoverServiceImpl implements LoverService {
 
     private final ChatClient chatClientWithMemory;
 
-    @Autowired
+    @jakarta.annotation.Resource
     private VectorStore loverVectorStore;
 
-    @Autowired
+    @jakarta.annotation.Resource
+    private VectorStore loverPgVectorStore;
+
+    @jakarta.annotation.Resource
     private Advisor loverCloudStoreAdvisor;
 
     // 新特性，快速定义类
@@ -117,7 +120,9 @@ public class LoverServiceImpl implements LoverService {
                 .advisors(
 //                        new QuestionAnswerAdvisor(loverVectorStore)
                         // 增强顾问
-                        loverCloudStoreAdvisor
+//                        loverCloudStoreAdvisor,
+                        // 使用线上数据库保存知识库
+                        new QuestionAnswerAdvisor(loverPgVectorStore)
                 )
                 .call()
                 .chatResponse();

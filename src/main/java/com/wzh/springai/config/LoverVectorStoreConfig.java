@@ -21,7 +21,7 @@ public class LoverVectorStoreConfig {
     private LoverDocumentLoader loverDocumentLoader;
 
     @Bean
-    VectorStore LoverVectorStore(EmbeddingModel dashscopeEmbeddingModel) {
+    VectorStore loverVectorStore(EmbeddingModel dashscopeEmbeddingModel) {
         SimpleVectorStore vectorStore = SimpleVectorStore.builder(dashscopeEmbeddingModel).build();
         List<Document> documents = loverDocumentLoader.loadDocuments();
         vectorStore.add(documents);
