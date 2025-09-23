@@ -15,6 +15,9 @@ import java.util.List;
 import static org.springframework.ai.vectorstore.pgvector.PgVectorStore.PgDistanceType.COSINE_DISTANCE;
 import static org.springframework.ai.vectorstore.pgvector.PgVectorStore.PgIndexType.HNSW;
 
+/**
+ * 基于向量知识库进行rag检索
+ */
 @Configuration
 public class LoverPgVectorStoreConfig {
 

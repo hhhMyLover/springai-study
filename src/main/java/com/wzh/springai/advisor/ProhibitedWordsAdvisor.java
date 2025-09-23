@@ -8,6 +8,10 @@ import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 
+/**
+ * 自定义advisor
+ * 进行违禁词拦截（使用message改写进行拦截）
+ */
 @Slf4j
 public class ProhibitedWordsAdvisor implements CallAroundAdvisor, StreamAroundAdvisor {
 
