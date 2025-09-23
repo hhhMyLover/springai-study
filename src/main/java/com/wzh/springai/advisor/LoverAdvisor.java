@@ -26,7 +26,7 @@ public class LoverAdvisor implements CallAroundAdvisor, StreamAroundAdvisor {
     }
 
     public int getOrder() {
-        return 0;
+        return 100;
     }
 
     private AdvisedRequest before(AdvisedRequest request) {

@@ -4,12 +4,12 @@ import com.wzh.springai.advisor.LoverAdvisor;
 import com.wzh.springai.advisor.ProhibitedWordsAdvisor;
 import com.wzh.springai.chatmemory.FileBaseChatMemory;
 import com.wzh.springai.model.vo.LoverReportVO;
+import com.wzh.springai.rag.LoverRagCustomerAdvisorFactory;
 import com.wzh.springai.service.LoverService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
-import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
@@ -122,7 +122,11 @@ public class LoverServiceImpl implements LoverService {
                         // 增强顾问
 //                        loverCloudStoreAdvisor,
                         // 使用线上数据库保存知识库
-                        new QuestionAnswerAdvisor(loverPgVectorStore)
+//                        new QuestionAnswerAdvisor(loverPgVectorStore)
+                        LoverRagCustomerAdvisorFactory.createLoverRagCustomerAdvisor(
+                                loverVectorStore,
+                                "单身"
+                        )
                 )
                 .call()
                 .chatResponse();

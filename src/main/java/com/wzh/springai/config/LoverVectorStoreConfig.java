@@ -1,6 +1,8 @@
 package com.wzh.springai.config;
 
 import com.wzh.springai.rag.LoverDocumentLoader;
+import com.wzh.springai.rag.MyKeywordEnricher;
+import com.wzh.springai.rag.MyTokenTextSplitter;
 import jakarta.annotation.Resource;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.embedding.EmbeddingModel;
@@ -20,11 +22,22 @@ public class LoverVectorStoreConfig {
     @Resource
     private LoverDocumentLoader loverDocumentLoader;
 
+    @Resource
+    private MyTokenTextSplitter myTokenTextSplitter;
+
+    @Resource
+    private MyKeywordEnricher myKeywordEnricher;
+
     @Bean
     VectorStore loverVectorStore(EmbeddingModel dashscopeEmbeddingModel) {
         SimpleVectorStore vectorStore = SimpleVectorStore.builder(dashscopeEmbeddingModel).build();
         List<Document> documents = loverDocumentLoader.loadDocuments();
-        vectorStore.add(documents);
+
+        // 不建议用 会被拆分混乱
+//        List<Document> splitDocuments = myTokenTextSplitter.splitCustomized(documents);
+        // 添加关键词
+        List<Document> enrichDocuments = myKeywordEnricher.enrichDocuments(documents);
+        vectorStore.add(enrichDocuments);
         return vectorStore;
     }
 }
