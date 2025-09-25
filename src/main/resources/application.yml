@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: springAi
+
+  profiles:
+    active: local
+
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      database: 0
+      timeout: 2000ms
+      connect-timeout: 2000ms
+      lettuce:
+        pool:
+          min-idle: 0
+          max-idle: 8
+          max-active: 8
+          max-wait: -1ms
+        # 禁用SSL
+        ssl:
+          enabled: false
+
+server:
+  port: 8123
+  servlet:
+    context-path: /api
+# springdoc-openapi
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: com.wzh.springai.controller
+# knife4j
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
