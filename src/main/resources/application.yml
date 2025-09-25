@@ -5,6 +5,13 @@ spring:
   profiles:
     active: local
 
+  ai:
+    dashscope:
+      api-key: ${DASHSCOPE_API_KEY:sk-placeholder-key-change-me}
+      chat:
+        options:
+          model: qwen-turbo
+
   data:
     redis:
       host: 127.0.0.1
