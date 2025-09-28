@@ -4,16 +4,17 @@ import com.wzh.springai.advisor.LoverAdvisor;
 import com.wzh.springai.advisor.ProhibitedWordsAdvisor;
 import com.wzh.springai.chatmemory.FileBaseChatMemory;
 import com.wzh.springai.model.vo.LoverReportVO;
-import com.wzh.springai.rag.LoverRagCustomerAdvisorFactory;
 import com.wzh.springai.service.LoverService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
+import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -42,6 +43,9 @@ public class LoverServiceImpl implements LoverService {
 
     @jakarta.annotation.Resource
     private Advisor loverCloudStoreAdvisor;
+
+    @jakarta.annotation.Resource
+    private ToolCallback[] allTools;
 
     // 新特性，快速定义类
 //    record LoverReport(String title, List<String> suggestions) {
@@ -118,16 +122,17 @@ public class LoverServiceImpl implements LoverService {
                 .advisors(spec -> spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
                         .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10))
                 .advisors(
-//                        new QuestionAnswerAdvisor(loverVectorStore)
+                        new QuestionAnswerAdvisor(loverVectorStore)
                         // 增强顾问
 //                        loverCloudStoreAdvisor,
                         // 使用线上数据库保存知识库
 //                        new QuestionAnswerAdvisor(loverPgVectorStore)
-                        LoverRagCustomerAdvisorFactory.createLoverRagCustomerAdvisor(
-                                loverVectorStore,
-                                "单身"
-                        )
+//                        LoverRagCustomerAdvisorFactory.createLoverRagCustomerAdvisor(
+//                                loverVectorStore,
+//                                "单身"
+//                        )
                 )
+                .tools(allTools)
                 .call()
                 .chatResponse();
         return chatResponse.getResult().getOutput().getText();

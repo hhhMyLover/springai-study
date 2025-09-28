@@ -1,8 +1,13 @@
 package com.wzh.springai.tool;
 
 import cn.hutool.core.io.FileUtil;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
 import com.wzh.springai.constant.FileSaveConstant;
-import org.commonmark.node.Paragraph;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 
