@@ -48,4 +48,11 @@ class LoverServiceTest {
         // 尝试更明确地指示需要使用工具
         loverService.chatLoverFormMCP("请使用地图搜索功能，在武汉江夏区秋果S酒店附近查找一家评分较高的川菜餐厅，并提供详细地址和联系方式", uuid);
     }
+
+    @Test
+    void chatLoverFormLocalMCP() {
+        String uuid = UUID.randomUUID().toString();
+        // 尝试更明确地指示需要使用工具
+        loverService.chatLoverFormMCP("请帮我查找关于花的图片", uuid);
+    }
 }
