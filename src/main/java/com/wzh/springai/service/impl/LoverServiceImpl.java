@@ -15,6 +15,7 @@ import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.ai.tool.ToolCallback;
+import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -46,6 +47,9 @@ public class LoverServiceImpl implements LoverService {
 
     @jakarta.annotation.Resource
     private ToolCallback[] allTools;
+
+    @jakarta.annotation.Resource
+    private ToolCallbackProvider toolCallbackProvider;
 
     // 新特性，快速定义类
 //    record LoverReport(String title, List<String> suggestions) {
@@ -133,6 +137,20 @@ public class LoverServiceImpl implements LoverService {
 //                        )
                 )
                 .tools(allTools)
+                .call()
+                .chatResponse();
+        return chatResponse.getResult().getOutput().getText();
+    }
+
+    @Override
+    public String chatLoverFormMCP(String message, String chatId) {
+        ChatResponse chatResponse = chatClientWithMemory.prompt(message)
+                .advisors(spec -> spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
+                        .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10))
+                .advisors(
+                        new QuestionAnswerAdvisor(loverVectorStore)
+                )
+                .tools(toolCallbackProvider)
                 .call()
                 .chatResponse();
         return chatResponse.getResult().getOutput().getText();

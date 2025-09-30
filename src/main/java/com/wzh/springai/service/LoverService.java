@@ -10,4 +10,6 @@ public interface LoverService {
     String chatLoverFormRAG(String message, String chatId);
 
     LoverReportVO chatLoverReport(String message, String chatId);
+
+    String chatLoverFormMCP(String message, String chatId);
 }

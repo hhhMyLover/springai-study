@@ -41,4 +41,11 @@ class LoverServiceTest {
         loverService.chatLoverFormRAG("我的名字叫山治，我前段时间和女朋友分手了，现在很伤心，我不知道该怎么做。帮我搜索网络上关于失恋的图片并保存", uuid);
 //        loverService.chatLoverFormRAG("我是一个单身人士，最近我想要谈恋爱，但是不知道从何提升个人魅力。请你给我一点建议,并且将这些建议生成一份pdf文档给我并且不要markdown格式，而是要自动生成符合pdf的格式。",uuid);
     }
+
+    @Test
+    void chatLoverFormMCP() {
+        String uuid = UUID.randomUUID().toString();
+        // 尝试更明确地指示需要使用工具
+        loverService.chatLoverFormMCP("请使用地图搜索功能，在武汉江夏区秋果S酒店附近查找一家评分较高的川菜餐厅，并提供详细地址和联系方式", uuid);
+    }
 }
