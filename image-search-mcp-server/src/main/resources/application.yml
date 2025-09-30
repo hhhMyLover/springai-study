@@ -1,0 +1,24 @@
+spring:
+  ai:
+    mcp:
+      server:
+        name: mcp-server
+        version: 1.0.0
+        type: SYNC
+        sse-message-endpoint: /mcp/messages
+        capabilities:
+          tool: true
+          resource: true
+          prompt: true
+          completion: true
+  application:
+    name: image-mcp-server
+
+  profiles:
+    active: stdio
+server:
+  port: 5170
+
+pexels:
+  api-key: fYlmnaQgiRUMdEEwe1KA5plB64IyKEOi99985nl5mHwEl6NU2NFDZoXm
+
